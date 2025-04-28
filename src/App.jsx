@@ -1,21 +1,23 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Signup from './components/pages/Signup'; // ✅ correct
-import Login from './components/pages/Login';   // ✅ correct
-import Dashboard from './components/pages/Dashboard'; // ✅ correct
-import { useAuth } from './context/AuthContext'; // ✅ correct
+// src/App.jsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./components/Auth/Login";
+import Signup from "./components/Auth/Signup";
+import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
 
 function App() {
-  const { currentUser } = useAuth();
-
   return (
-    <Router>
+  <>
+  {/* <h1>hello</h1> */}
+    <BrowserRouter>
       <Routes>
-        <Route path="/signup" element={!currentUser ? <Signup /> : <Navigate to="/dashboard" />} />
-        <Route path="/login" element={!currentUser ? <Login /> : <Navigate to="/dashboard" />} />
-        <Route path="/dashboard" element={currentUser ? <Dashboard /> : <Navigate to="/login" />} />
-        <Route path="*" element={<Navigate to={currentUser ? "/dashboard" : "/login"} />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
+  </>
   );
 }
 
