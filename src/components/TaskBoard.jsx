@@ -6,9 +6,9 @@ export default function TaskBoard() {
   const [tasks, setTasks] = useState([]);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
-  const [assignedUser, setAssignedUser] = useState(""); 
-  const [taskStatus, setTaskStatus] = useState("To Do"); 
-  const [filter, setFilter] = useState(""); 
+  const [assignedUser, setAssignedUser] = useState("");
+  const [taskStatus, setTaskStatus] = useState("To Do");
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "tasks"), (snapshot) => {
@@ -60,293 +60,164 @@ export default function TaskBoard() {
   );
 
   return (
-    <div className="task-board-container">
-      <h1 className="title">Task Board</h1>
+    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-purple-400 via-pink-300 to-pink-500 py-10 px-4">
+      <div className="bg-white w-full max-w-4xl p-8 rounded-3xl shadow-2xl">
+        <h1 className="text-5xl font-bold text-center text-gray-800 mb-8">Task Board</h1>
 
-      <input
-        className="search-input"
-        placeholder="Search tasks"
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-      />
-
-      <div className="task-input-section">
         <input
-          className="task-input"
-          placeholder="New Task Title"
-          value={newTaskTitle}
-          onChange={(e) => setNewTaskTitle(e.target.value)}
+          className="w-full p-4 mb-8 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 text-gray-700"
+          placeholder="Search tasks..."
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
         />
-        <textarea
-          className="task-textarea"
-          placeholder="Task Description"
-          value={newTaskDescription}
-          onChange={(e) => setNewTaskDescription(e.target.value)}
-        />
-        <input
-          className="task-input"
-          placeholder="Assign to"
-          value={assignedUser}
-          onChange={(e) => setAssignedUser(e.target.value)}
-        />
-        <select
-          className="task-select"
-          value={taskStatus}
-          onChange={(e) => setTaskStatus(e.target.value)}
-        >
-          <option value="To Do">To Do</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Done">Done</option>
-        </select>
-        <button className="add-task-btn" onClick={handleAddTask}>
-          Add Task
-        </button>
+
+        <div className="grid grid-cols-1 gap-6 mb-10">
+          <input
+            className="p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-700"
+            placeholder="New Task Title"
+            value={newTaskTitle}
+            onChange={(e) => setNewTaskTitle(e.target.value)}
+          />
+          <textarea
+            className="p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 text-gray-700 resize-y min-h-[100px]"
+            placeholder="Task Description"
+            value={newTaskDescription}
+            onChange={(e) => setNewTaskDescription(e.target.value)}
+          />
+          <input
+            className="p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-700"
+            placeholder="Assign to"
+            value={assignedUser}
+            onChange={(e) => setAssignedUser(e.target.value)}
+          />
+          <select
+            className="p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 text-gray-700"
+            value={taskStatus}
+            onChange={(e) => setTaskStatus(e.target.value)}
+          >
+            <option value="To Do">To Do</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Done">Done</option>
+          </select>
+
+          <button
+            className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-pink-600 hover:to-purple-700 text-white font-semibold rounded-xl transition transform hover:scale-105 shadow-md"
+            onClick={handleAddTask}
+          >
+            Add Task
+          </button>
+        </div>
+
+        <h2 className="text-3xl font-bold text-gray-700 mb-6">Tasks</h2>
+
+        <div className="space-y-6">
+          {filteredTasks.map((task) => (
+            <div key={task.id} className="p-6 bg-gray-100 rounded-2xl shadow-md">
+              {task.isEditing ? (
+                <div className="space-y-4">
+                  <input
+                    className="w-full p-3 border border-gray-300 rounded-xl"
+                    value={task.title}
+                    onChange={(e) =>
+                      setTasks(
+                        tasks.map((t) =>
+                          t.id === task.id ? { ...t, title: e.target.value } : t
+                        )
+                      )
+                    }
+                  />
+                  <textarea
+                    className="w-full p-3 border border-gray-300 rounded-xl min-h-[80px]"
+                    value={task.description}
+                    onChange={(e) =>
+                      setTasks(
+                        tasks.map((t) =>
+                          t.id === task.id ? { ...t, description: e.target.value } : t
+                        )
+                      )
+                    }
+                  />
+                  <input
+                    className="w-full p-3 border border-gray-300 rounded-xl"
+                    value={task.assignedTo}
+                    onChange={(e) =>
+                      setTasks(
+                        tasks.map((t) =>
+                          t.id === task.id ? { ...t, assignedTo: e.target.value } : t
+                        )
+                      )
+                    }
+                  />
+                  <select
+                    className="w-full p-3 border border-gray-300 rounded-xl"
+                    value={task.status}
+                    onChange={(e) =>
+                      setTasks(
+                        tasks.map((t) =>
+                          t.id === task.id ? { ...t, status: e.target.value } : t
+                        )
+                      )
+                    }
+                  >
+                    <option value="To Do">To Do</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Done">Done</option>
+                  </select>
+
+                  <div className="flex gap-4">
+                    <button
+                      className="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl"
+                      onClick={() => handleEditTask(task.id, task)}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl"
+                      onClick={() =>
+                        setTasks(
+                          tasks.map((t) =>
+                            t.id === task.id ? { ...t, isEditing: false } : t
+                          )
+                        )
+                      }
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-2xl font-bold text-gray-800">{task.title}</p>
+                  <p className="text-gray-600">Assigned to: {task.assignedTo}</p>
+                  <p className="text-gray-600">{task.description}</p>
+                  <p className="text-pink-600 font-semibold">Status: {task.status}</p>
+
+                  <div className="flex gap-4 mt-4">
+                    <button
+                      className="flex-1 py-2 bg-gradient-to-r from-red-400 to-pink-500 hover:from-red-500 hover:to-pink-600 text-white rounded-xl font-semibold"
+                      onClick={() => handleDeleteTask(task.id)}
+                    >
+                      Delete
+                    </button>
+                    <button
+                      className="flex-1 py-2 bg-gradient-to-r from-yellow-400 to-pink-500 hover:from-yellow-500 hover:to-pink-600 text-white rounded-xl font-semibold"
+                      onClick={() =>
+                        setTasks(
+                          tasks.map((t) =>
+                            t.id === task.id ? { ...t, isEditing: true } : t
+                          )
+                        )
+                      }
+                    >
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-
-      <div className="tasks-list">
-        <h2 className="task-list-title">Tasks</h2>
-        {filteredTasks.map((task) => (
-          <div key={task.id} className="task-card">
-            {task.isEditing ? (
-              <div className="task-edit-form">
-                <input
-                  className="task-input"
-                  value={task.title}
-                  onChange={(e) =>
-                    setTasks(
-                      tasks.map((t) =>
-                        t.id === task.id ? { ...t, title: e.target.value } : t
-                      )
-                    )
-                  }
-                />
-                <textarea
-                  className="task-textarea"
-                  value={task.description}
-                  onChange={(e) =>
-                    setTasks(
-                      tasks.map((t) =>
-                        t.id === task.id ? { ...t, description: e.target.value } : t
-                      )
-                    )
-                  }
-                />
-                <input
-                  className="task-input"
-                  value={task.assignedTo}
-                  onChange={(e) =>
-                    setTasks(
-                      tasks.map((t) =>
-                        t.id === task.id ? { ...t, assignedTo: e.target.value } : t
-                      )
-                    )
-                  }
-                />
-                <select
-                  className="task-select"
-                  value={task.status}
-                  onChange={(e) =>
-                    setTasks(
-                      tasks.map((t) =>
-                        t.id === task.id ? { ...t, status: e.target.value } : t
-                      )
-                    )
-                  }
-                >
-                  <option value="To Do">To Do</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Done">Done</option>
-                </select>
-                <button className="save-btn" onClick={() => handleEditTask(task.id, task)}>
-                  Save
-                </button>
-                <button
-                  className="cancel-btn"
-                  onClick={() =>
-                    setTasks(
-                      tasks.map((t) =>
-                        t.id === task.id ? { ...t, isEditing: false } : t
-                      )
-                    )
-                  }
-                >
-                  Cancel
-                </button>
-              </div>
-            ) : (
-              <div className="task-details">
-                <p className="task-title">{task.title}</p>
-                <p className="assigned-user">Assigned to: {task.assignedTo}</p>
-                <p className="task-description">{task.description}</p>
-                <p className="task-status">Status: {task.status}</p>
-                <button className="delete-btn" onClick={() => handleDeleteTask(task.id)}>
-                  Delete
-                </button>
-                <button
-                  className="edit-btn"
-                  onClick={() =>
-                    setTasks(
-                      tasks.map((t) =>
-                        t.id === task.id ? { ...t, isEditing: true } : t
-                      )
-                    )
-                  }
-                >
-                  Edit
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <style jsx>{`
-        .task-board-container {
-          padding: 20px;
-          max-width: 900px;
-          margin: 0 auto;
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f9;
-          border-radius: 10px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .title {
-          font-size: 2.5rem;
-          color: #333;
-          text-align: center;
-          margin-bottom: 20px;
-        }
-
-        .search-input {
-          padding: 10px;
-          width: 100%;
-          max-width: 500px;
-          margin-bottom: 20px;
-          border-radius: 5px;
-          border: 1px solid #ccc;
-          font-size: 1rem;
-        }
-
-        .task-input-section {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 15px;
-          max-width: 500px;
-          margin: 0 auto;
-        }
-
-        .task-input,
-        .task-textarea,
-        .task-select {
-          padding: 10px;
-          border-radius: 5px;
-          border: 1px solid #ccc;
-          font-size: 1rem;
-        }
-
-        .task-textarea {
-          min-height: 100px;
-          resize: vertical;
-        }
-
-        .add-task-btn {
-          padding: 12px 20px;
-          background-color: #696cff;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          font-weight: bold;
-          transition: background-color 0.3s;
-        }
-
-        .add-task-btn:hover {
-          background-color: #5850e6;
-        }
-
-        .tasks-list {
-          margin-top: 30px;
-        }
-
-        .task-card {
-          background-color: #fff;
-          padding: 20px;
-          border-radius: 8px;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-          margin-bottom: 15px;
-        }
-
-        .task-title {
-          font-size: 1.3rem;
-          font-weight: bold;
-        }
-
-        .assigned-user,
-        .task-description,
-        .task-status {
-          font-size: 1rem;
-          color: #555;
-        }
-
-        .delete-btn,
-        .edit-btn {
-          padding: 8px 15px;
-          margin-right: 10px;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-        }
-
-        .delete-btn {
-          background-color: #e57373;
-          color: white;
-        }
-
-        .edit-btn {
-          background-color: #ffd54f;
-          color: white;
-        }
-
-        .delete-btn:hover {
-          background-color: #d32f2f;
-        }
-
-        .edit-btn:hover {
-          background-color: #fbc02d;
-        }
-
-        .task-edit-form input,
-        .task-edit-form textarea {
-          margin-bottom: 10px;
-        }
-
-        .save-btn,
-        .cancel-btn {
-          padding: 10px 20px;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-        }
-
-        .save-btn {
-          background-color: #4caf50;
-          color: white;
-        }
-
-        .cancel-btn {
-          background-color: #f44336;
-          color: white;
-        }
-
-        .save-btn:hover {
-          background-color: #45a049;
-        }
-
-        .cancel-btn:hover {
-          background-color: #e53935;
-        }
-      `}</style>
     </div>
   );
 }

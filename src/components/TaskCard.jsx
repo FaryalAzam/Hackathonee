@@ -1,22 +1,23 @@
-// src/components/TaskCard.jsx
-import React from "react";
+import React, { useState } from "react";
+import TaskCard from "./TaskCard";
 
-export default function TaskCard({ task, onDelete }) {
+function TaskBoard() {
+  const [tasks, setTasks] = useState([
+    { id: "1", title: "Finish React Project", assignedTo: "John Doe" },
+    { id: "2", title: "Complete Task Tracker", assignedTo: "Jane Smith" },
+  ]);
+
+  const handleDelete = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+
   return (
-    <div
-      style={{
-        padding: "10px",
-        backgroundColor: "#fff",
-        borderRadius: "8px",
-        marginBottom: "10px",
-        boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-      }}
-    >
-      <h4>{task.title}</h4>
-      {task.assignedTo && <p>Assigned to: {task.assignedTo}</p>}
-      <button onClick={() => onDelete(task.id)} style={{ marginTop: "10px" }}>
-        Delete
-      </button>
+    <div>
+      {tasks.map((task) => (
+        <TaskCard key={task.id} task={task} onDelete={handleDelete} />
+      ))}
     </div>
   );
 }
+
+export default TaskBoard;

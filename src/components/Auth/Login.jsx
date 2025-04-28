@@ -46,73 +46,43 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    await signInWithEmailAndPassword(auth, email, password);
-    navigate("/dashboard");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login failed:", error.message);
+      alert("Invalid credentials. Please try again.");
+    }
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.formContainer}>
-        <h2 style={styles.header}>Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-pink-300 to-pink-500 px-4">
+      <div className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md text-center">
+        <h2 className="text-4xl font-bold text-gray-800 mb-8">Login</h2>
+
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          style={styles.input}
+          className="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-gray-700"
         />
+
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          style={styles.input}
+          className="w-full p-3 mb-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-700"
         />
-        <button onClick={handleLogin} style={styles.button}>Login</button>
+
+        <button
+          onClick={handleLogin}
+          className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-pink-600 hover:to-purple-700 text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md"
+        >
+          Login
+        </button>
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-    backgroundColor: "#f0f0f0",
-  },
-  formContainer: {
-    backgroundColor: "white",
-    padding: "40px",
-    borderRadius: "8px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    width: "300px",
-    textAlign: "center",
-  },
-  header: {
-    marginBottom: "20px",
-    color: "#333",
-    fontFamily: "Arial, sans-serif",
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    margin: "10px 0",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    fontSize: "16px",
-  },
-  button: {
-    width: "100%",
-    padding: "12px",
-    backgroundColor: "#696cff",
-    border: "none",
-    borderRadius: "4px",
-    color: "white",
-    fontSize: "16px",
-    cursor: "pointer",
-    transition: "background-color 0.3s",
-  },
-};
-
 
