@@ -6,12 +6,14 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // to track loading state
   const navigate = useNavigate();
   const auth = getAuth();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true); // Start loading when submitting
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -26,6 +28,8 @@ export default function Signup() {
       } else {
         setError("Something went wrong. Please try again.");
       }
+    } finally {
+      setLoading(false); // End loading after submission
     }
   };
 
@@ -61,9 +65,12 @@ export default function Signup() {
 
           <button
             type="submit"
-            className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-pink-600 hover:to-purple-700 text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md"
+            className={`w-full py-3 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-pink-600 hover:to-purple-700 text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md ${
+              loading ? "cursor-not-allowed opacity-50" : ""
+            }`}
+            disabled={loading} // Disable button while loading
           >
-            Sign Up
+            {loading ? "Signing up..." : "Sign Up"}
           </button>
         </form>
       </div>
